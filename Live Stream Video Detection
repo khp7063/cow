@@ -1,0 +1,23 @@
+from imageai.Detection import VideoObjectDetection
+import os
+import cv2
+
+execution_path = os.getcwd()
+camera = cv2.VideoCapture(0)
+
+detector = VideoObjectDetection()
+# RetinaNet model
+detector.setModelTypeAsRetinaNet()
+detector.setModelPath(os.path.join(execution_path , "resnet50_coco_best_v2.0.1.h5"))
+detector.loadModel()
+
+# set custom object to detect
+custom_objects = detector.CustomObjects(cow=True)
+
+video_path = detector.detectCustomObjectsFromVideo(
+                camera_input=camera,
+                custom_objects=custom_objects, 
+                # Livestream detection not in need of: input_file_path=os.path.join(execution_path, "traffic.mp4"),
+                output_file_path=os.path.join(execution_path, "camera_detected_video"),
+                frames_per_second=20, log_progress=True, minimum_percentage_probability=40)
+print(video_path)
